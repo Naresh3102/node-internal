@@ -1,20 +1,18 @@
 const User = require("../models/User");
 
-exports.getAllUser = async (req, res) => {
+exports.getAllUser = async (req, res, next) => {
   try {
-    const users = await User.find();
+    const users = await User.fin();
     res.status(200).json({
       message: "Success",
       users,
     });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
+    next(err);
   }
 };
 
-exports.getUserById = async (req, res) => {
+exports.getUserById = async (req, res, next) => {
   const userId = req.params.id;
   try {
     const user = await User.findById(userId);
@@ -23,13 +21,11 @@ exports.getUserById = async (req, res) => {
       user,
     });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
+    next(err)
   }
 };
 
-exports.getUserByEmail = async (req, res) => {
+exports.getUserByEmail = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
 
@@ -44,21 +40,19 @@ exports.getUserByEmail = async (req, res) => {
       user,
     });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
+    next(err)
   }
 };
 
-exports.createUser = async (req, res) => {
+exports.createUser = async (req, res, next) => {
   try {
-    const existinguser = await User.findOne({ email: req.body.email });
+    // const existinguser = await User.findOne({ email: req.body.email });
 
-    if (existinguser) {
-      return res.status(400).json({
-        message: "Email already exist",
-      });
-    }
+    // if (existinguser) {
+    //   return res.status(400).json({
+    //     message: "Email already exist",
+    //   });
+    // }
 
     const newUser = await User.create(req.body);
     // const newUser = new User(req.body)
@@ -68,36 +62,30 @@ exports.createUser = async (req, res) => {
       newUser,
     });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
+    next(err);
   }
 };
 
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
   const { name, email, password } = req.body;
   try {
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
-        name,
-        email,
         password,
       },
-      { new: true }
+      { new: true, runValidators: true }
     );
     res.status(200).json({
       message: "updated",
       user: updatedUser,
     });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
-    });
+    next(err)
   }
 };
 
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
     if (!deletedUser) {
@@ -111,6 +99,6 @@ exports.deleteUser = async (req, res) => {
       deletedUser,
     });
   } catch (err) {
-    res.status(500).json(err);
+    next(err)
   }
 };

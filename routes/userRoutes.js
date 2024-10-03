@@ -12,7 +12,7 @@ userRouter.get('/:id', getUserById)
 userRouter.post('/', createUser)
 
 // update
-userRouter.put('/:id', updateUser)
+userRouter.patch('/:id', updateUser)
 
 // delete
 userRouter.delete('/:id', deleteUser)

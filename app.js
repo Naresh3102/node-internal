@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const userRouter = require("./routes/userRoutes");
+const errorHandler = require('./middleware/errorHandler');
+const { errorResponse } = require("./middleware/errorController");
 
 dotenv.config();
 const app = express();
@@ -38,6 +40,10 @@ connectToDB();
 // });
 
 app.use("/users", userRouter);
+
+
+app.use(errorHandler)
+app.use("*", errorResponse)
 
 app.listen(process.env.PORT, () => {
   console.log("Server is running in 3000");
