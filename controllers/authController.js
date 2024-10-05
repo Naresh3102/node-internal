@@ -51,14 +51,25 @@ exports.login = async (req, res, next) => {
       { expiresIn: process.env.JWT_EXPIRE } // options
     );
 
-    const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge: 3600000, // 1hr in milliseconds
+    });
 
     res.status(200).json({
       message: "Success",
-      token,
-      decodedData,
     });
   } catch (err) {
     next(err);
   }
+};
+
+exports.logout = (req, res) => {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    message: 'User logged out'
+  })
 };

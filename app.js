@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+
 const userRouter = require("./routes/userRoutes");
 const errorHandler = require("./middleware/errorHandler");
 const { errorResponse } = require("./middleware/errorController");
@@ -10,6 +12,7 @@ const authRouter = require("./routes/authRoutes");
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 app.use(morgan("dev"));
 
