@@ -7,22 +7,22 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/userController");
-const { protect } = require("../middleware/authMiddleware");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
 const userRouter = express.Router();
 
 // Get
-userRouter.get("/", protect, getAllUser);
+userRouter.get("/", protect, authorize("user", "admin"), getAllUser);
 userRouter.get("/:id", getUserById);
 userRouter.post("/email", getUserByEmail);
 
 // Post - create
-userRouter.post("/", protect, createUser);
+userRouter.post("/", protect, authorize("admin"), createUser);
 
 // update
-userRouter.patch("/:id", protect, updateUser);
+userRouter.patch("/:id", protect, authorize("admin"), updateUser);
 
 // delete
-userRouter.delete("/:id", protect, deleteUser);
+userRouter.delete("/:id", protect, authorize("admin"), deleteUser);
 
 module.exports = userRouter;

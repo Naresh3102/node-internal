@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 
 exports.protect = async (req, res, next) => {
   let token;
-  console.log(req.cookies.jwt);
   if (req.cookies.jwt) {
     token = req.cookies.jwt;
 
@@ -21,3 +20,23 @@ exports.protect = async (req, res, next) => {
     });
   }
 };
+
+exports.authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        message: `You don't have access for this endpoint`,
+      });
+    }
+    next();
+  };
+};
+
+// exports.authorizeAdmin = (req, res, next) => {
+//   if (req.user.role !== "admin") {
+//     return res.status(403).json({
+//       message: `You don't have access for this endpoint`,
+//     });
+//   }
+//   next();
+// };

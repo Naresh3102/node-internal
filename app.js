@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const userRouter = require("./routes/userRoutes");
 const errorHandler = require("./middleware/errorHandler");
@@ -11,6 +12,12 @@ const authRouter = require("./routes/authRoutes");
 
 dotenv.config();
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
